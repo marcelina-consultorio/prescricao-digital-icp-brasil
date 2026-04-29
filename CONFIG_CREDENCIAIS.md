@@ -19,11 +19,68 @@
 - **Hash:** SHA-256
 - **Validade:** [Data de emissão] até [Data de expiração]
 
-### Arquivo do Certificado
-- **Caminho Local:** `/home/ubuntu/upload/11de2604254bf62c(1).pfx`
+### Arquivo do Certificado (.pfx)
+
+**O que é o .pfx?**
+
+O arquivo `.pfx` (PKCS#12) é um **arquivo de armazenamento de certificado digital** que contém:
+- Certificado público (identifica você)
+- Chave privada (segredo para assinar documentos)
+- Cadeia de certificados (validação)
+
+É o arquivo que você recebeu da AC SOLUTI quando contratou o certificado A1.
+
+**Dados do Arquivo:**
+- **Nome Completo:** `11de2604254bf62c (1).pfx`
+- **Caminho Local:** `/home/ubuntu/upload/11de2604254bf62c (1).pfx`
+- **Tamanho:** ~50-100 KB
+- **Formato:** PKCS#12 (.pfx ou .p12)
 - **Senha:** `Pd$Fg69pCbqi83D`
-- **Formato:** PKCS#12
 - **Uso:** Assinatura digital com pyHanko (local)
+- **Validade:** [Data de emissão] até [Data de expiração]
+
+**Como Usar no Código:**
+
+```python
+from pyhanko.sign import signers
+
+# Carregar certificado do arquivo .pfx
+signer = signers.SimpleSigner.load_pkcs12(
+    pfx_file="/home/ubuntu/upload/11de2604254bf62c (1).pfx",
+    passphrase=b"Pd$Fg69pCbqi83D"
+)
+
+# Usar para assinar PDF
+out = signers.sign_pdf(w, signers.PdfSignatureMetadata(...), signer=signer)
+```
+
+**Segurança:**
+- ⚠️ **NUNCA** compartilhar o arquivo .pfx
+- ⚠️ **NUNCA** fazer commit no GitHub
+- ⚠️ **NUNCA** enviar por email sem criptografia
+- ✅ **SEMPRE** usar variáveis de ambiente para a senha
+- ✅ **SEMPRE** manter backup seguro
+- ✅ **SEMPRE** usar permissões de arquivo (chmod 400)
+
+**Backup:**
+```bash
+# Fazer backup do certificado
+cp /home/ubuntu/upload/11de2604254bf62c\ \(1\).pfx /backup/certificado_backup.pfx
+chmod 400 /backup/certificado_backup.pfx
+```
+
+**Verificar Validade:**
+```bash
+openssl pkcs12 -in /home/ubuntu/upload/11de2604254bf62c\ \(1\).pfx \
+  -passin pass:Pd$Fg69pCbqi83D -info
+```
+
+**Renovação:**
+Quando o certificado expirar (verificar data acima), você precisará:
+1. Contratar novo certificado na AC SOLUTI
+2. Receber novo arquivo .pfx
+3. Atualizar o caminho e senha no código
+4. Fazer novo backup
 
 ### Endpoints BRy Cloud KMS Testados
 
